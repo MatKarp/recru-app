@@ -7,17 +7,26 @@ export const ModalProvider = ({ children, debug = false }: { children: ReactNode
 
     const [modalQueue, setModalQueue] = useState<ModalQueueItem[]>([]);
 
-
     useEffect(() => {
         if (modalQueue.length > 0 && !modalQueue.some(modal => modal.status === "visible")) {
             setModalQueue(prevQueue => {
                 const newQueue = [...prevQueue];
-                const firstPendingIndex = newQueue.findIndex(modal => modal.status === "pending");
-                if (firstPendingIndex !== -1) {
-                    newQueue[firstPendingIndex] = {
-                        ...newQueue[firstPendingIndex],
-                        status: "visible"
-                    };
+                const pendingModals = newQueue.filter(modal => modal.status === "pending");
+                const sortedPending = [...pendingModals].sort((a, b) => {
+                    const priorityA = a.config.priority ?? 0;
+                    const priorityB = b.config.priority ?? 0;
+                    return priorityB - priorityA;
+                });
+                
+                if (sortedPending.length > 0) {
+                    const highestPriorityModal = sortedPending[0];
+                    const modalIndex = newQueue.findIndex(modal => modal.id === highestPriorityModal.id);
+                    if (modalIndex !== -1) {
+                        newQueue[modalIndex] = {
+                            ...newQueue[modalIndex],
+                            status: "visible"
+                        };
+                    }
                 }
                 return newQueue;
             });
@@ -33,8 +42,6 @@ export const ModalProvider = ({ children, debug = false }: { children: ReactNode
             visibleModals: visible
         };
     }, [modalQueue]);
-
-    console.log('aaa', modalQueue)
 
     const showModal = useCallback((modal: ModalConfig) => {
         setModalQueue((prevQueue) => [
@@ -60,7 +67,7 @@ export const ModalProvider = ({ children, debug = false }: { children: ReactNode
                 <p>This is debug panel. To trun it off just remove debug prop from ModalProvider</p>
                 {pendingModals.map((modal) => (
                     <div key={modal.id}>
-                        {modal.id} pending...
+                        prioroty: [{modal.config.priority}] {modal.id} pending...
                     </div>
                 ))}
             </div>}
@@ -75,5 +82,3 @@ export const ModalProvider = ({ children, debug = false }: { children: ReactNode
 
     </ModalContext.Provider>
 }
-
-
