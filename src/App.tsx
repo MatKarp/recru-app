@@ -19,7 +19,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ThemeProvider>
-            <ModalProvider>
+            <ModalProvider debug={true}>
                 <RouterProvider router={router} />
             </ModalProvider>
           </ThemeProvider>
