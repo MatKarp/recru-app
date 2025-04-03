@@ -66,3 +66,7 @@
     transform: scale(1);
     transition: transform 300ms ease-out;
 }
+
+.styled-modal {
+    background: #c3d0a4;
+}
