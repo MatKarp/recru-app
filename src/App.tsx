@@ -9,6 +9,7 @@ import { ThemeProvider } from '@components/Theme/ThemeContext';
 import { router } from './routes';
 import { store } from './store';
 import './App.css';
+import {ModalProvider} from "@components/Modal/ModalProvider.tsx";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ThemeProvider>
-            <RouterProvider router={router} />
+            <ModalProvider>
+                <RouterProvider router={router} />
+            </ModalProvider>
           </ThemeProvider>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={true} />
