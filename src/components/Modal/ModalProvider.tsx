@@ -3,6 +3,14 @@ import { ModalConfig, ModalQueueItem } from "@components/Modal/types.ts";
 import { ModalContext } from "@components/Modal/ModalContext.tsx";
 import './Modal.css'
 
+const sortModalsByPriority = (modals: ModalQueueItem[]) => {
+    return [...modals].sort((a, b) => {
+        const priorityA = a.config.priority ?? 0;
+        const priorityB = b.config.priority ?? 0;
+        return priorityB - priorityA;
+    });
+};
+
 export const ModalProvider = ({ children, debug = false }: { children: ReactNode, debug: boolean }) => {
 
     const [modalQueue, setModalQueue] = useState<ModalQueueItem[]>([]);
@@ -12,11 +20,7 @@ export const ModalProvider = ({ children, debug = false }: { children: ReactNode
             setModalQueue(prevQueue => {
                 const newQueue = [...prevQueue];
                 const pendingModals = newQueue.filter(modal => modal.status === "pending");
-                const sortedPending = [...pendingModals].sort((a, b) => {
-                    const priorityA = a.config.priority ?? 0;
-                    const priorityB = b.config.priority ?? 0;
-                    return priorityB - priorityA;
-                });
+                const sortedPending = sortModalsByPriority(pendingModals);
                 
                 if (sortedPending.length > 0) {
                     const highestPriorityModal = sortedPending[0];
