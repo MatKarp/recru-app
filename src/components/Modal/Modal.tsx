@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import { ModalContext } from "@components/Modal/ModalContext.tsx";
-import { ModalConfig } from "./types";
-import { Button } from "@ui";
+import {useContext, useEffect, useState} from "react";
+import {ModalContext} from "@components/Modal/ModalContext.tsx";
+import {ModalConfig} from "./types";
+import {Button} from "@ui";
 import './Modal.css';
-import { StyledModal } from "./StyledModal";
+import {StyledModal} from "./StyledModal";
 
 export const Modal = (modal: ModalConfig) => {
     const modalContext = useContext(ModalContext);
@@ -32,7 +32,7 @@ export const Modal = (modal: ModalConfig) => {
             component: Modal,
             animation,
             priority,
-            props: { message: `Hello, this is a modal with priority ${priority ?? 'none'}!` },
+            props: {message: `Hello, this is a modal with priority ${priority ?? 'none'}!`},
             onClose: () => modalContext.hideModal(modalId),
             children: null
         });
@@ -46,15 +46,16 @@ export const Modal = (modal: ModalConfig) => {
             component: StyledModal,
             title: "Next Modal Example",
             animation: 'fade',
-            props: { message: "This is a styled modal with a different design!" },
+            props: {message: "This is a styled modal with a different design!"},
             onClose: () => modalContext.hideModal(modalId),
             children: null
         });
     };
 
     return (
-        <div className={`modal-content ${getAnimationClass()}`}>
-             <h2>{modal.title || 'Simple Modal'}</h2>
+        <div className={`modal-content ${getAnimationClass()}`} role="dialog" aria-labelledby={modal.title}
+             aria-describedby={modal.props?.message}>
+            <h2>{modal.title || 'Simple Modal'}</h2>
             {modal.priority}
             {modal.props?.message && <p>{modal.props.message}</p>}
             {modal.children}
